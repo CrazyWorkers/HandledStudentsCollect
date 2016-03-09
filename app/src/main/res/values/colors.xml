@@ -12,7 +12,9 @@
     <color name="Peru">#CD853F</color>
     <color name="YellowGreen">#9ACD32</color>
     <color name="RoyalBlue">#4169E1</color>
-    <color name="gray">#999999</color>
+    <color name="gray">#ecedf1</color>
+    <color name="SlateGray">#303031</color>
     <color name="blue">#4E6B9F</color>
     <color name="newBlue">#6F8ABB</color>
+    <color name="black">#000000</color>
 </resources>

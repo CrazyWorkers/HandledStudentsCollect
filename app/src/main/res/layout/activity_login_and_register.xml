@@ -6,7 +6,5 @@
     android:id="@+id/Container"
     android:fitsSystemWindows="true"
     tools:context="com.ziyan.handledstudentscollect.LoginAndRegister">
-
     <include layout="@layout/content_login" />
-
 </android.support.design.widget.CoordinatorLayout>

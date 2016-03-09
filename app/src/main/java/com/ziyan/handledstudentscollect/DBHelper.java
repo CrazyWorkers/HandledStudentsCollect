@@ -5,29 +5,38 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 /**
  * Created by Administrator on 2015/12/31.
  */
 public class DBHelper {
-    public static final int DB_VERSION=1;
-    public static final String DB_NAME="users.db";
+    private static final  String _ID="ID";
+    private static final String USERNAME="USERNAME";
+    private static  final String PASSWORD="PASSWORD";
+    private static final String IS_SAVED="IS_SAVED";
+    public static final int DB_VERSION=2;
+    public static final String DB_NAME="user.db";
     public static final String USER_TABLE_NAME="user_table";
-    public static final String []USER_COLS={User._ID,User.USERNAME,User.PASSWORD,User.IS_SAVED};
+    public static final String []USER_COLS={_ID,USERNAME,PASSWORD,IS_SAVED};
+    private static final String CREATE_USER_TABLE="CREATE TABLE "+USER_TABLE_NAME+"("
+            +USER_COLS[0]+"  INTEGER PRIMARY KEY AUTOINCREMENT,"
+            +USER_COLS[1]+"  TEXT,"
+            +USER_COLS[2]+"  TEXT,"
+            +USER_COLS[3]+"  INTEGER);";
 
     private SQLiteDatabase db;
     private DBopenHelper dbopenHelper;
 
     private static class DBopenHelper extends SQLiteOpenHelper
     {
-        public DBopenHelper(Context context)
-        {
+        public DBopenHelper(Context context) {
             super(context,DB_NAME,null,DB_VERSION);
         }
 
         @Override
         public void onCreate(SQLiteDatabase db) {
-            db.execSQL("create table"+USER_TABLE_NAME+"("+User._ID+"integer primary key,"+User.USERNAME+"text,"+User.PASSWORD+"text,"+User.IS_SAVED+"INTEGER)");
+            db.execSQL(CREATE_USER_TABLE);
         }
 
         @Override
@@ -37,7 +46,7 @@ public class DBHelper {
         }
     }
 
-    private DBHelper(Context context)
+    public DBHelper(Context context)
     {
         this.dbopenHelper=new DBopenHelper(context);
         establishDB();
@@ -47,56 +56,33 @@ public class DBHelper {
         if(null==this.db)
         {
             this.db=this.dbopenHelper.getWritableDatabase();
+            Log.e("test","数据库创建成功！");
         }
     }
 
-    public long insertOrUpdate(String userName,String password,int isSaved)
-    {
-        boolean isUpdate=false;
-        String[]userNames=queryAllUserName();
-        for(int i=0;i<userNames.length;i++)
-        {
-            if(userName.equals(userNames[i]));
-            isUpdate=true;
-            break;
-        }
-        long id=-1;
-        if(isUpdate)
-        {
-            id=update(userName,password,isSaved);
-        }
-        else
-        {
-            if(db!=null)
-            {
 
-                id=insert(userName,password,isSaved);
-            }
-        }
-        return id;
-    }
 
     public long delete(String userName) {
-        long id = db.delete(USER_TABLE_NAME, User.USERNAME + " = '" + userName
+        long id = db.delete(USER_TABLE_NAME, USERNAME + " = '" + userName
                 + "'", null);
         return id;
     }
 
     public long insert(String userName, String password, int isSaved) {
         ContentValues values=new ContentValues();
-        values.put(User.USERNAME,userName);
-        values.put(User.PASSWORD,password);
-        values.put(User.IS_SAVED,isSaved);
+        values.put(USERNAME,userName);
+        values.put(PASSWORD,password);
+        values.put(IS_SAVED,isSaved);
         long id=db.insert(USER_TABLE_NAME,null,values);
         return id;
     }
 
     public long update(String userName, String password, int isSaved) {
         ContentValues values=new ContentValues();
-        values.put(User.USERNAME,userName);
-        values.put(User.PASSWORD,password);
-        values.put(User.IS_SAVED,isSaved);
-        long id = db.update(USER_TABLE_NAME, values, User.USERNAME + " = '"
+        values.put(USERNAME,userName);
+        values.put(PASSWORD,password);
+        values.put(IS_SAVED,isSaved);
+        long id = db.update(USER_TABLE_NAME, values, USERNAME + " = '"
                 + userName + "'", null);
         return id;
     }
@@ -105,13 +91,13 @@ public class DBHelper {
     public String queryPasswordByName(String userName)
     {
         String sql = "select * from " + USER_TABLE_NAME + " where "
-                + User.USERNAME + " = '" + userName + "'";
+                + USERNAME + " = '" + userName + "'";
         Cursor cursor=db.rawQuery(sql,null);
         String password="";
         if(cursor.getCount()>0)
         {
             cursor.moveToFirst();
-            password=cursor.getString(cursor.getColumnIndex(User.PASSWORD));
+            password=cursor.getString(cursor.getColumnIndex(PASSWORD));
         }
         return password;
     }
@@ -119,13 +105,13 @@ public class DBHelper {
     public int queryIsSavedByName(String userName) {
 
         String sql = "select * from " + USER_TABLE_NAME + " where "
-                + User.USERNAME + " = '" + userName + "'";
+                + USERNAME + " = '" + userName + "'";
         Cursor cursor = db.rawQuery(sql, null);
         int isSaved = 0;
         if(cursor.getCount()>0)
         {
             cursor.moveToFirst();
-            isSaved=cursor.getInt(cursor.getColumnIndex(User.IS_SAVED));
+            isSaved=cursor.getInt(cursor.getColumnIndex(IS_SAVED));
         }
         return isSaved;
     }
@@ -141,7 +127,7 @@ public class DBHelper {
                 cursor.moveToFirst();
                 for (int i=0;i<count;i++)
                 {
-                    userNames[i]=cursor.getString(cursor.getColumnIndex(User.USERNAME));
+                    userNames[i]=cursor.getString(cursor.getColumnIndex(USERNAME));
                     cursor.moveToNext();
                 }
             }
@@ -151,8 +137,6 @@ public class DBHelper {
         {
             return new String[0];
         }
-
-
     }
 
     public void cleanup() {

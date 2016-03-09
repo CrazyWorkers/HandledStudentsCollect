@@ -9,15 +9,15 @@
     </item>
     <item android:state_enabled="false">
         <shape>
-            <solid android:color="@color/blue"/>
-            <stroke android:width="1dp" android:color="@color/blue"/>
+            <solid android:color="#1FBAF3"/>
+            <stroke android:width="1dp" android:color="#1FBAF3"/>
             <corners android:radius="@dimen/button_style_corner_radius"/>
         </shape>
     </item>
     <item>
         <shape>
-            <solid android:color="@color/blue"/>
-            <stroke android:width="1dp" android:color="@color/blue"/>
+            <solid android:color="#1FBAF3"/>
+            <stroke android:width="1dp" android:color="#1FBAF3"/>
             <corners android:radius="@dimen/button_style_corner_radius"/>
         </shape>
     </item>
